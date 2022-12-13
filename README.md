@@ -13,10 +13,21 @@ IC74HC595 mySipo(10, 11, 12);
 
 ### begin()
 ```
-mySopi.begin(;
+mySipo.begin(;
 ```
 
 ### writeByte(*byte*)
+```
+mySipo.writeByte(0x05);
+```
+Set the parallel outputs on IC channels A through H to values
+of *byte* bits 0 through 7 respectively.
+
+### writeBit(*bit*, *state*)
+```
+mySipo.writeBit(0, 1);
+```
+
 
  
 Example:

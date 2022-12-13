@@ -1,9 +1,15 @@
 # IC74HC595
 
-ADT for accessing a 74HC595 SIPO buffer.
+ADT for operating a 74HC595 serial-in-parallel-out (SIPO) buffer.
 
-The 74HC595 is an 8-bit serialto-parallel I/O buffer. This library
-allows the host application to write the buffer.
+## Constructors
+
+### IC74HC595 *mySipo*(*gpioClock*, *gpioData*, *gpioLatch*);
+```
+IC74HC595 mySipo(10, 11, 12);
+```
+
+## Methods
  
 Example:
 ``` 

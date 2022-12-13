@@ -27,25 +27,30 @@ of *byte* bits 0 through 7 respectively.
 ```
 mySipo.writeBit(0, 1);
 ```
+Set parallel output channel *bit* to *state* (0 or 1).
 
-
- 
-Example:
-``` 
-#define SopiDataGpio 2
-#define SopiLatchGpio 3
-#define SopiClockGpio 4
-
-#define MyInterestingBit 6
- 
-IC74HC595 sopi = IC74HC595(SopiDataGpio, SopiLatchGpio, SopiClockGpio);
-
-void setup() {
-  sopi.begin();
-}
- 
-void loop() {
-  sopi.writeByte(0xff);
-  sopi.writeBit(MyInterestingBit, 0); 
-}
+### configureUpdate(*interval*, *callback*)
 ```
+uint8_t getData() {
+  return(0x0f);
+}
+
+mySipo.configureUpdate(20, getData);
+```
+Configure automatic update parameters by setting the interval
+between updates to *interval* milliseconds and specifying a
+function *callback* which will be called by the update process
+to recover a value for output each time *interval* expires.
+
+### updateMaybe(*force*)
+```
+mySipo.updateMaybe();
+```
+Generally this method will be called from within the main program
+loop() to update the IC output channels with a value returned from
+the callback function each time the specified update interval expires.
+```
+mySipo.updateMaybe(true);
+```
+Can be called at any time to force an immediate update.
+

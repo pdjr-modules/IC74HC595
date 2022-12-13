@@ -38,11 +38,15 @@ class IC74HC595 {
     void begin();
     void writeByte(uint8_t state);
     void writeBit(int bit, int state);
+    void configureUpdate(unsigned long updateInterval, uint8_t(*dataFunction)());
+    void updateMaybe(bool force = false);
   private:
     uint8_t gpioClock;
     uint8_t gpioData;
     uint8_t gpioLatch;
     uint8_t state;
+    unsigned long updateInterval;
+    uint8_t (*dataFunction)();
 };
 
 #endif

@@ -20,10 +20,10 @@ void IC74HC595::begin() {
   this->writeByte(0);
 }
 
-void IC74HC595::writeByte(int state) {
-  digitalWrite(this->gpioLatch, LOW);
-  retval = shiftOut(this->gpioData, this->gpioClock, MSBFIRST, state);
-  digitalWrite(this->gpioLatch. HIGH);
+void IC74HC595::writeByte(uint8_t state) {
+  digitalWrite(this->gpioLatch, 0);
+  shiftOut(this->gpioData, this->gpioClock, MSBFIRST, state);
+  digitalWrite(this->gpioLatch, 1);
   this->state = state;
 }
 
@@ -33,5 +33,21 @@ void IC74HC595::writeBit(int bit, int state) {
   } else {
     this->state &= ~(1UL << bit);
   }
-  digitalWrite(this->state);
+  this->writeByte(this->state);
+}
+
+void IC74HC595::configureUpdate(unsigned long updateInterval, uint8_t (*dataFunction)()) {
+  this->updateInterval = updateInterval;
+  this->dataFunction = dataFunction;
+}
+
+void IC74HC595::updateMaybe(bool force) {
+  static unsigned long deadline = 0UL;
+  unsigned long now = millis();
+
+  if ((now > deadline) || force) {
+    this->writeByte(this->dataFunction());
+    deadline = (now + this->updateInterval);
+  }
+
 }

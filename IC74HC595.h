@@ -32,16 +32,16 @@
 #ifndef IC74HC595_H
 #define IC74HC595_H
 
-class IC74HC165 {
+class IC74HC595 {
   public:
-    IC74HC595(uint8_t gpioData, uint8_t gpioLatch, uint8_t gpioClock);
+    IC74HC595(uint8_t gpioClock, uint8_t gpioData, uint8_t gpioLatch);
     void begin();
     void writeByte(uint8_t state);
     void writeBit(int bit, int state);
   private:
+    uint8_t gpioClock;
     uint8_t gpioData;
     uint8_t gpioLatch;
-    uint8_t gpioClock;
     uint8_t state;
 };
 

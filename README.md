@@ -10,6 +10,14 @@ IC74HC595 mySipo(10, 11, 12);
 ```
 
 ## Methods
+
+### begin()
+```
+mySopi.begin(;
+```
+
+### writeByte(*byte*)
+
  
 Example:
 ``` 

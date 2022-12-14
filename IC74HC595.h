@@ -1,32 +1,6 @@
 /**********************************************************************
  * IC74HC595.h - ADT for accessing a 74HC595 SIPO buffer.
  * 2022 (c) Paul Reeve <preeve@pdjr.eu>
- * 
- * * 
- * The 74HC595 is an 8-bit serialto-parallel I/O buffer. This library
- * allows the host application to write the buffer.
- * 
- * Example:
- * 
- * #define PisoDataGpio 2
- * #define PisoLatchGpio 3
- * #define PisoClockGpio 4
- * #define MyInterestingBit 6
- * 
- * IC74HC165 piso = IC74HC165(PisoDataGpio, PisoLatchGpio, PisoClockGpio);
- * 
- * void setup() {
- *   piso.begin();
- * }
- * 
- * void loop() {
- *   uint8_t byte;
- *   int bit;
- *
- *   byte = piso.readByte();
- *   bit = piso.readBit(MyInterestingBit); 
- * }
- * 
  */
 
 #ifndef IC74HC595_H
@@ -38,7 +12,7 @@ class IC74HC595 {
     void begin();
     void writeByte(uint8_t state);
     void writeBit(int bit, int state);
-    void configureUpdate(unsigned long updateInterval, uint8_t(*dataFunction)());
+    void configureUpdate(unsigned long updateInterval, uint8_t(*callback)());
     void updateMaybe(bool force = false);
   private:
     uint8_t gpioClock;
@@ -46,7 +20,7 @@ class IC74HC595 {
     uint8_t gpioLatch;
     uint8_t state;
     unsigned long updateInterval;
-    uint8_t (*dataFunction)();
+    uint8_t (*callback)();
 };
 
 #endif

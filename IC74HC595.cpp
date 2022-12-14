@@ -11,6 +11,9 @@ IC74HC595::IC74HC595(uint8_t gpioClock, uint8_t gpioData, uint8_t gpioLatch) {
   this->gpioClock = gpioClock;
   this->gpioData = gpioData;
   this->gpioLatch = gpioLatch;
+  this->state = 0;
+  this->updateInterval = 0UL;
+  this->callback = 0;
 }
 
 void IC74HC595::begin() {
@@ -36,9 +39,9 @@ void IC74HC595::writeBit(int bit, int state) {
   this->writeByte(this->state);
 }
 
-void IC74HC595::configureUpdate(unsigned long updateInterval, uint8_t (*dataFunction)()) {
+void IC74HC595::configureUpdate(unsigned long updateInterval, uint8_t (*callback)()) {
   this->updateInterval = updateInterval;
-  this->dataFunction = dataFunction;
+  this->callback = callback;
 }
 
 void IC74HC595::updateMaybe(bool force) {
@@ -46,7 +49,7 @@ void IC74HC595::updateMaybe(bool force) {
   unsigned long now = millis();
 
   if ((now > deadline) || force) {
-    this->writeByte(this->dataFunction());
+    this->writeByte(this->callback());
     deadline = (now + this->updateInterval);
   }
 

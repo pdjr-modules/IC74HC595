@@ -8,19 +8,19 @@
 
 class IC74HC595 {
   public:
-    IC74HC595(uint8_t gpioClock, uint8_t gpioData, uint8_t gpioLatch);
+    IC74HC595(unsigned char gpioClock, unsigned char gpioData, unsigned char gpioLatch);
     void begin();
-    void writeByte(uint8_t state);
+    void writeByte(unsigned char state);
     void writeBit(int bit, int state);
-    void configureUpdate(unsigned long updateInterval, uint8_t(*callback)());
+    void configureUpdate(unsigned long updateInterval, unsigned char(*callback)());
     void updateMaybe(bool force = false);
   private:
-    uint8_t gpioClock;
-    uint8_t gpioData;
-    uint8_t gpioLatch;
-    uint8_t state;
+    unsigned char gpioClock;
+    unsigned char gpioData;
+    unsigned char gpioLatch;
+    unsigned char state;
     unsigned long updateInterval;
-    uint8_t (*callback)();
+    unsigned char (*callback)();
 };
 
 #endif

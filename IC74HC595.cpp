@@ -7,7 +7,7 @@
 #include <Arduino.h>
 #include <IC74HC595.h>
 
-IC74HC595::IC74HC595(uint8_t gpioClock, uint8_t gpioData, uint8_t gpioLatch) {
+IC74HC595::IC74HC595(unsigned char gpioClock, unsigned char gpioData, unsigned char gpioLatch) {
   this->gpioClock = gpioClock;
   this->gpioData = gpioData;
   this->gpioLatch = gpioLatch;
@@ -23,7 +23,7 @@ void IC74HC595::begin() {
   this->writeByte(0);
 }
 
-void IC74HC595::writeByte(uint8_t state) {
+void IC74HC595::writeByte(unsigned char state) {
   digitalWrite(this->gpioLatch, 0);
   shiftOut(this->gpioData, this->gpioClock, MSBFIRST, state);
   digitalWrite(this->gpioLatch, 1);
@@ -39,7 +39,7 @@ void IC74HC595::writeBit(int bit, int state) {
   this->writeByte(this->state);
 }
 
-void IC74HC595::configureUpdate(unsigned long updateInterval, uint8_t (*callback)()) {
+void IC74HC595::configureUpdate(unsigned long updateInterval, unsigned char (*callback)()) {
   this->updateInterval = updateInterval;
   this->callback = callback;
 }

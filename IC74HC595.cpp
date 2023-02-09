@@ -5,7 +5,7 @@
 
 #include <cstddef>
 #include <Arduino.h>
-#include <IC74HC595.h>
+#include "IC74HC595.h"
 
 IC74HC595::IC74HC595(unsigned char gpioClock, unsigned char gpioData, unsigned char gpioLatch) {
   this->gpioClock = gpioClock;
@@ -23,11 +23,17 @@ void IC74HC595::begin() {
   this->writeByte(0);
 }
 
-void IC74HC595::writeByte(unsigned char state) {
+void IC74HC595::write(unsigned int status, unsigned int count) {
   digitalWrite(this->gpioLatch, 0);
-  shiftOut(this->gpioData, this->gpioClock, MSBFIRST, state);
+  while (count--) {
+    shiftOut(this->gpioData, this->gpioClock, MSBFIRST, (status >> (8 * count)));
+  }
   digitalWrite(this->gpioLatch, 1);
   this->state = state;
+}
+
+void IC74HC595::writeByte(unsigned char status) {
+  this->write(status);
 }
 
 void IC74HC595::writeBit(int bit, int state) {

@@ -50,9 +50,29 @@ class IC74HC595 {
      */
     void writeByte(unsigned char status = 0);
 
+    /**
+     * @brief 
+     * 
+     * @param bit 
+     * @param state 
+     */
     void writeBit(int bit, int state);
+    
+    /**
+     * @brief 
+     * 
+     * @param updateInterval 
+     * @param callback 
+     */
     void configureUpdate(unsigned long updateInterval, unsigned char(*callback)());
+    
+    /**
+     * @brief 
+     * 
+     * @param force 
+     */
     void updateMaybe(bool force = false);
+    
   private:
     unsigned char gpioClock;
     unsigned char gpioData;

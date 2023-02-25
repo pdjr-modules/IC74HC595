@@ -20,35 +20,32 @@ class IC74HC595 {
      * @param gpioClock - GPIO pin connected to IC pin (clock).
      * @param gpioData - GPIO pin connected to IC pin (data).
      * @param gpioLatch - GPIO pin connected to IC pin (latch).
+     * @param bufferCount - the number of ICs in the buffer dais-chain
+     * (defaults to one).
      */
-    IC74HC595(unsigned char gpioClock, unsigned char gpioData, unsigned char gpioLatch);
+    IC74HC595(unsigned char gpioClock, unsigned char gpioData, unsigned char gpioLatch, unsigned int bufferCount = 1);
 
     /**
      * @brief Set the I/O mode of the configured GPIO pins.
      * 
-     * In Arduino world this method should be called from setup().
+     * Best called from setup().
      */
     void begin();
     
     /**
-     * @brief Set the status of one or more connected buffers from a
-     * specified value.
+     * @brief Set the status of the buffer to a specified value.
      * 
-     * @param status - the bit values to be assigned to the buffers.
-     * Bits 0-7 for buffer 0, 8-15 for buffer 1 and so on. Defaults
-     * to 0.
-     * @param count - the number of buffer ICs to be updated (defaults
-     * to 1). 
+     * If bufferLength (specified when the instance was created) is 1
+     * then status is a byte value to be assigned to the buffer and
+     * must be passed by reference. For example:
+     * ```
+     * uint8_t v = 0xff;
+     * myBuffer.write(&x);
+     * ```
+     * Otherwise status is taken to be an array of byte values which
+     * will be written to successive ICs in the buffer daisy-chain. 
      */
-    void write(unsigned int status = 0U, unsigned int count = 1U);
-
-    /**
-     * @brief Set the status of the first connected buffer.
-     * 
-     * @param status - the bit values to be assigned to the buffer.
-     * Defaults to 0.
-     */
-    void writeByte(unsigned char status = 0);
+    void write(uint8_t *status);
 
     /**
      * @brief 
@@ -56,7 +53,7 @@ class IC74HC595 {
      * @param bit 
      * @param state 
      */
-    void writeBit(int bit, int state);
+    void writeBit(unsigned int bit, unsigned int state);
     
     /**
      * @brief 
@@ -64,22 +61,25 @@ class IC74HC595 {
      * @param updateInterval 
      * @param callback 
      */
-    void configureUpdate(unsigned long updateInterval, unsigned char(*callback)());
+    void configureCallback(uint8_t *(*callback)(uint8_t *buffer), unsigned long callbackInterval = 1000UL);
     
     /**
      * @brief 
      * 
      * @param force 
      */
-    void updateMaybe(bool force = false);
+    void callbackMaybe(bool force = false);
     
   private:
     unsigned char gpioClock;
     unsigned char gpioData;
     unsigned char gpioLatch;
-    unsigned int state;
-    unsigned long updateInterval;
-    unsigned char (*callback)();
+    uint8_t *buffer;
+    unsigned int bufferCount;
+
+    void (*callback)(uint8_t *buffer);
+    unsigned long callbackInterval;
+
 };
 
 #endif

@@ -26,13 +26,13 @@ void IC74HC595::begin() {
 void IC74HC595::write(uint8_t *status) {
   digitalWrite(this->gpioLatch, 0);
   for (unsigned int i = 0; i < this->bufferCount; i++) {
-    this->buffer[i] = status[i];
+    this->buffer[i] = (this->bufferCount == 1U)?(uint8_t) status:status[i];
     shiftOut(this->gpioData, this->gpioClock, MSBFIRST, this->buffer[i]);
   }
   digitalWrite(this->gpioLatch, 1);
 }
 
-void IC74HC595::writeBit(int bit, int state) {
+void IC74HC595::writeBit(unsigned int bit, unsigned int state) {
   if (state) {
     this->buffer[bit / 8] |= (1UL << (bit % 8));
   } else {

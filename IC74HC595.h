@@ -77,7 +77,7 @@ class IC74HC595 {
     uint8_t *buffer;
     unsigned int bufferCount;
 
-    void (*callback)(uint8_t *buffer);
+    uint8_t *(*callback)(uint8_t *buffer);
     unsigned long callbackInterval;
 
 };

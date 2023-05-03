@@ -12,8 +12,7 @@ IC74HC595::IC74HC595(unsigned char gpioClock, unsigned char gpioData, unsigned c
   this->gpioData = gpioData;
   this->gpioLatch = gpioLatch;
   this->bufferCount = bufferCount;
-  this->buffer = new uint8_t[this->bufferCount];
-  for (unsigned int i = 0; i < this->bufferCount; i++) this->buffer[i] = 0;
+  this->buffer = 0;
 }
 
 void IC74HC595::begin() {
@@ -24,24 +23,24 @@ void IC74HC595::begin() {
 }
 
 void IC74HC595::write(unsigned int status) {
+  this->buffer = status;
   digitalWrite(this->gpioLatch, 0);
   for (unsigned int i = 0; i < this->bufferCount; i++) {
-    this->buffer[i] = (status & (0xff << ((this->bufferCount - 1) * 8)));
-    shiftOut(this->gpioData, this->gpioClock, MSBFIRST, this->buffer[i]);
+    shiftOut(this->gpioData, this->gpioClock, MSBFIRST, (this->buffer >> ((this->bufferCount - 1) * 8)) & 0xff);
   }
   digitalWrite(this->gpioLatch, 1);
 }
 
 void IC74HC595::writeBit(unsigned int bit, unsigned int state) {
   if (state) {
-    this->buffer[bit / 8] |= (1UL << (bit % 8));
+    this->buffer |= (1UL << bit);
   } else {
-    this->buffer[bit / 8] &= ~(1UL << (bit % 8));
+    this->buffer &= ~(1UL << bit);
   }
   this->write(this->buffer);
 }
 
-void IC74HC595::configureCallback(uint8_t *(*callback)(uint8_t *buffer), unsigned long callbackInterval) {
+void IC74HC595::configureCallback(unsigned int (*callback)(unsigned int buffer), unsigned long callbackInterval) {
   this->callback = callback;
   this->callbackInterval = callbackInterval;
 }

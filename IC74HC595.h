@@ -45,7 +45,7 @@ class IC74HC595 {
      * Otherwise status is taken to be an array of byte values which
      * will be written to successive ICs in the buffer daisy-chain. 
      */
-    void write(uint8_t *status);
+    void write(unsigned int status);
 
     /**
      * @brief 
@@ -61,7 +61,7 @@ class IC74HC595 {
      * @param updateInterval 
      * @param callback 
      */
-    void configureCallback(uint8_t *(*callback)(uint8_t *buffer), unsigned long callbackInterval = 1000UL);
+    void configureCallback(unsigned int (*callback)(unsigned int buffer), unsigned long callbackInterval = 1000UL);
     
     /**
      * @brief 
@@ -74,10 +74,10 @@ class IC74HC595 {
     unsigned char gpioClock;
     unsigned char gpioData;
     unsigned char gpioLatch;
-    uint8_t *buffer;
+    unsigned int buffer;
     unsigned int bufferCount;
 
-    uint8_t *(*callback)(uint8_t *buffer);
+    unsigned int (*callback)(unsigned int buffer);
     unsigned long callbackInterval;
 
 };

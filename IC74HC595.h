@@ -81,15 +81,24 @@ class IC74HC595 {
     void writeBit(unsigned int bit, unsigned int state);
     
     /**
-     * @brief 
-     * 
-     * @param updateInterval 
-     * @param callback 
+     * @brief Configure a callback function to provide regular status updates.
+     *
+     * The callback function will be passed the current buffer status
+     * as its only argument and it should return a possibly updated
+     * status which will be promptly written to the buffer.
+     *
+     * @param updateInterval - interval between invocations of \a callback in milliseconds.
+     * @param callback - a callback function.
      */
     void configureCallback(unsigned int (*callback)(unsigned int buffer), unsigned long callbackInterval = 1000UL);
     
     /**
-     * @brief 
+     * @brief Call any configured callback function at the configured interval.
+     * 
+     * This method should be called from loop() and will make sure that
+     * the configured calling frequency is honoured unless \a force is
+     * supplied and true in which case the callback function will be
+     * invoked immediately.
      * 
      * @param force 
      */

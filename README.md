@@ -12,8 +12,8 @@ The [IC74HC595](#classIC74HC595) is an 8-bit serial-in parallel-out (SIPO) buffe
 `public void `[`begin`](#classIC74HC595_1a66416a0c85080cd00c3ebede9fca3f7b)`()` | Set the I/O mode of the configured GPIO pins.
 `public void `[`write`](#classIC74HC595_1a7d87b0e7410edd336dd72ee9ab8499c4)`(unsigned int status,unsigned int buffers)` | Set the outputs of one or more buffer ICs to a specified state.
 `public void `[`writeBit`](#classIC74HC595_1adaf39e8c1f9dae013304ba8725bf29ff)`(unsigned int bit,unsigned int state)` | Set the state of a single parallel output.
-`public void `[`configureCallback`](#classIC74HC595_1aedb307231bf7d0f42d9eaf0abb0e3c45)`(unsigned int(*)(unsigned int buffer) callback,unsigned long callbackInterval)` | #### Parameters
-`public void `[`callbackMaybe`](#classIC74HC595_1a9b94635c84aedde3e0df7452a0139763)`(bool force)` | #### Parameters
+`public void `[`configureCallback`](#classIC74HC595_1aedb307231bf7d0f42d9eaf0abb0e3c45)`(unsigned int(*)(unsigned int buffer) callback,unsigned long callbackInterval)` | Configure a callback function to provide regular status updates.
+`public void `[`callbackMaybe`](#classIC74HC595_1a9b94635c84aedde3e0df7452a0139763)`(bool force)` | Call any configured callback function at the configured interval.
 
 ## Members
 
@@ -46,7 +46,7 @@ Set the outputs of one or more buffer ICs to a specified state.
 
 Each bit in *status* defines the output state of a single parallel output channel: bits through 7 define the status of the first buffer IC in any daisy chain; bits 8 through 15 the status of any second IC and so on.
 
-The number of low order bits to be written can be specified in buffer sized chunks by *buffers:* if this argument is omitted or set to zero then the *bufferCount* value specified at instantiation will be used in its stead.
+The number of low order bits to be written can be specified in buffer sized chunks by *buffers:* if this argument is omitted or set to zero then the *bufferCount* value supplied at instantiation (or its default) will be used in its stead.
 
 #### Parameters
 * `status` - the value to be written to the buffer. 
@@ -57,7 +57,7 @@ The number of low order bits to be written can be specified in buffer sized chun
 
 Set the state of a single parallel output.
 
-When it is not *bit* specifies the bit in the buffer which should be set and *state* specifies the value to be assigned.
+When it is not appropriate to set all buffer outputs in a single operation, this method can be used to set a single parallel output channel by specifying the channel and the value to which it should be set.
 
 #### Parameters
 * `bit` - index of the output channel to be set (0..31). 
@@ -66,12 +66,20 @@ When it is not *bit* specifies the bit in the buffer which should be set and *st
 
 #### `public void `[`configureCallback`](#classIC74HC595_1aedb307231bf7d0f42d9eaf0abb0e3c45)`(unsigned int(*)(unsigned int buffer) callback,unsigned long callbackInterval)` 
 
-#### Parameters
-* `updateInterval` 
+Configure a callback function to provide regular status updates.
 
-* `callback`
+The callback function will be passed the current buffer status as its only argument and it should return a possibly updated status which will be promptly written to the buffer.
+
+#### Parameters
+* `updateInterval` - interval between invocations of *callback* in milliseconds. 
+
+* `callback` - a callback function.
 
 #### `public void `[`callbackMaybe`](#classIC74HC595_1a9b94635c84aedde3e0df7452a0139763)`(bool force)` 
+
+Call any configured callback function at the configured interval.
+
+This method should be called from loop() and will make sure that the configured calling frequency is honoured unless *force* is supplied and true in which case the callback function will be invoked immediately.
 
 #### Parameters
 * `force`

@@ -10,7 +10,7 @@ The [IC74HC595](#classIC74HC595) is an 8-bit serial-in parallel-out (SIPO) buffe
 --------------------------------|---------------------------------------------
 `public  `[`IC74HC595`](#classIC74HC595_1ad6a63f4598d3b419bb3a98010f00ab75)`(unsigned char gpioClock,unsigned char gpioData,unsigned char gpioLatch,unsigned int bufferCount)` | Construct a new [IC74HC595](#classIC74HC595) object.
 `public void `[`begin`](#classIC74HC595_1a66416a0c85080cd00c3ebede9fca3f7b)`()` | Set the I/O mode of the configured GPIO pins.
-`public void `[`write`](#classIC74HC595_1a1ab013254c6c18ef3ab6f5fdce9d62e9)`(unsigned int status)` | Set the buffer parallel outputs to a specified state.
+`public void `[`write`](#classIC74HC595_1a7d87b0e7410edd336dd72ee9ab8499c4)`(unsigned int status,unsigned int buffers)` | Set the outputs of one or more buffer ICs to a specified state.
 `public void `[`writeBit`](#classIC74HC595_1adaf39e8c1f9dae013304ba8725bf29ff)`(unsigned int bit,unsigned int state)` | Set the state of a single parallel output.
 `public void `[`configureCallback`](#classIC74HC595_1aedb307231bf7d0f42d9eaf0abb0e3c45)`(unsigned int(*)(unsigned int buffer) callback,unsigned long callbackInterval)` | #### Parameters
 `public void `[`callbackMaybe`](#classIC74HC595_1a9b94635c84aedde3e0df7452a0139763)`(bool force)` | #### Parameters
@@ -40,20 +40,24 @@ Set the I/O mode of the configured GPIO pins.
 
 Initialises the GPIO pins for buffer control. This method must be called from setup() before any attempt is made to send data to the buffer.
 
-#### `public void `[`write`](#classIC74HC595_1a1ab013254c6c18ef3ab6f5fdce9d62e9)`(unsigned int status)` 
+#### `public void `[`write`](#classIC74HC595_1a7d87b0e7410edd336dd72ee9ab8499c4)`(unsigned int status,unsigned int buffers)` 
 
-Set the buffer parallel outputs to a specified state.
+Set the outputs of one or more buffer ICs to a specified state.
 
-Each bit in *status* defines the output state of a single parallel output. Bits 0 through 7 define the status of the first IC in any daisy chain; bits 8 through 15 relate to the secong IC and so on.
+Each bit in *status* defines the output state of a single parallel output channel: bits through 7 define the status of the first buffer IC in any daisy chain; bits 8 through 15 the status of any second IC and so on.
+
+The number of low order bits to be written can be specified in buffer sized chunks by *buffers:* if this argument is omitted or set to zero then the *bufferCount* value specified at instantiation will be used in its stead.
 
 #### Parameters
-* `status` - the value to be written to the buffer.
+* `status` - the value to be written to the buffer. 
+
+* `buffers` - the number of buffer ICs to be updated.
 
 #### `public void `[`writeBit`](#classIC74HC595_1adaf39e8c1f9dae013304ba8725bf29ff)`(unsigned int bit,unsigned int state)` 
 
 Set the state of a single parallel output.
 
-*bit* specifies the bit in the buffer which should be set and *state* specifies the value to be assigned.
+When it is not *bit* specifies the bit in the buffer which should be set and *state* specifies the value to be assigned.
 
 #### Parameters
 * `bit` - index of the output channel to be set (0..31). 

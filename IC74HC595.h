@@ -50,21 +50,27 @@ class IC74HC595 {
     void begin();
     
     /**
-     * @brief Set the buffer parallel outputs to a specified state.
+     * @brief Set the outputs of one or more buffer ICs to a specified state.
      *
      * Each bit in \a status defines the output state of a single
-     * parallel output.
-     * Bits 0 through 7 define the status of the first IC in any
-     * daisy chain; bits 8 through 15 relate to the secong IC and
-     * so on.
-     * 
+     * parallel output channel: bits  through 7 define the status of
+     * the first buffer IC in any daisy chain; bits 8 through 15 the
+     * status of any second IC and so on.
+     *
+     * The number of low order bits to be written can be specified
+     * in buffer sized chunks by \a buffers: if this argument is omitted
+     * or set to zero then the \a bufferCount value specified at
+     * instantiation will be used in its stead.
+     *
      * @param status - the value to be written to the buffer.
+     * @param buffers - the number of buffer ICs to be updated.
      */
-    void write(unsigned int status);
+    void write(unsigned int status, unsigned int buffers = 0);
 
     /**
      * @brief Set the state of a single parallel output.
      * 
+     * When it is not
      * \a bit specifies the bit in the buffer which should be set and
      * \a state specifies the value to be assigned. 
      * 

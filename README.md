@@ -1,56 +1,75 @@
-# IC74HC595
+# class `IC74HC595` 
 
-ADT for operating a 74HC595 serial-in-parallel-out (SIPO) buffer.
+Interface to the [IC74HC595](#classIC74HC595) SIPO buffer IC.
 
-## Constructors
+The [IC74HC595](#classIC74HC595) is an 8-bit serial-in parallel-out (SIPO) buffer IC that is commonly used to expand microcontroller output capacity.
 
-### IC74HC595 *mySipo*(*gpioClock*, *gpioData*, *gpioLatch*);
-```
-IC74HC595 mySipo(10, 11, 12);
-```
+## Summary
 
-## Methods
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`public  `[`IC74HC595`](#classIC74HC595_1ad6a63f4598d3b419bb3a98010f00ab75)`(unsigned char gpioClock,unsigned char gpioData,unsigned char gpioLatch,unsigned int bufferCount)` | Construct a new [IC74HC595](#classIC74HC595) object.
+`public void `[`begin`](#classIC74HC595_1a66416a0c85080cd00c3ebede9fca3f7b)`()` | Set the I/O mode of the configured GPIO pins.
+`public void `[`write`](#classIC74HC595_1a1ab013254c6c18ef3ab6f5fdce9d62e9)`(unsigned int status)` | Set the buffer parallel outputs to a specified state.
+`public void `[`writeBit`](#classIC74HC595_1adaf39e8c1f9dae013304ba8725bf29ff)`(unsigned int bit,unsigned int state)` | Set the state of a single parallel output.
+`public void `[`configureCallback`](#classIC74HC595_1aedb307231bf7d0f42d9eaf0abb0e3c45)`(unsigned int(*)(unsigned int buffer) callback,unsigned long callbackInterval)` | #### Parameters
+`public void `[`callbackMaybe`](#classIC74HC595_1a9b94635c84aedde3e0df7452a0139763)`(bool force)` | #### Parameters
 
-### begin()
-```
-mySipo.begin(;
-```
+## Members
 
-### writeByte(*byte*)
-```
-mySipo.writeByte(0x05);
-```
-Set the parallel outputs on IC channels A through H to values
-of *byte* bits 0 through 7 respectively.
+#### `public  `[`IC74HC595`](#classIC74HC595_1ad6a63f4598d3b419bb3a98010f00ab75)`(unsigned char gpioClock,unsigned char gpioData,unsigned char gpioLatch,unsigned int bufferCount)` 
 
-### writeBit(*bit*, *state*)
-```
-mySipo.writeBit(0, 1);
-```
-Set parallel output channel *bit* to *state* (0 or 1).
+Construct a new [IC74HC595](#classIC74HC595) object.
 
-### configureUpdate(*interval*, *callback*)
-```
-uint8_t getData() {
-  return(0x0f);
-}
+*gpioClock*, *gpioData* and *gpioLatch* identify the host microcontroller GPIO pins used for the SIPO interface connections.
 
-mySipo.configureUpdate(20, getData);
-```
-Configure automatic update parameters by setting the interval
-between updates to *interval* milliseconds and specifying a
-function *callback* which will be called by the update process
-to recover a value for output each time *interval* expires.
+*bufferCount* specifies the number of ICs making up the daisy-chained buffer. Buffer updates are passed as an integer value so the max number of buffers supported by the library depends upon the host system's integer implementation: on a system with 32-bit integers this abstraction can support up to 4 SIPO buffers.
 
-### updateMaybe(*force*)
-```
-mySipo.updateMaybe();
-```
-Generally this method will be called from within the main program
-loop() to update the IC output channels with a value returned from
-the callback function each time the specified update interval expires.
-```
-mySipo.updateMaybe(true);
-```
-Can be called at any time to force an immediate update.
+#### Parameters
+* `gpioClock` - GPIO pin connected to IC pin (clock). 
 
+* `gpioData` - GPIO pin connected to IC pin (data). 
+
+* `gpioLatch` - GPIO pin connected to IC pin (latch). 
+
+* `bufferCount` - optional number of ICs in the buffer daisy-chain (defaults to one).
+
+#### `public void `[`begin`](#classIC74HC595_1a66416a0c85080cd00c3ebede9fca3f7b)`()` 
+
+Set the I/O mode of the configured GPIO pins.
+
+Initialises the GPIO pins for buffer control. This method must be called from setup() before any attempt is made to send data to the buffer.
+
+#### `public void `[`write`](#classIC74HC595_1a1ab013254c6c18ef3ab6f5fdce9d62e9)`(unsigned int status)` 
+
+Set the buffer parallel outputs to a specified state.
+
+Each bit in *status* defines the output state of a single parallel output. Bits 0 through 7 define the status of the first IC in any daisy chain; bits 8 through 15 relate to the secong IC and so on.
+
+#### Parameters
+* `status` - the value to be written to the buffer.
+
+#### `public void `[`writeBit`](#classIC74HC595_1adaf39e8c1f9dae013304ba8725bf29ff)`(unsigned int bit,unsigned int state)` 
+
+Set the state of a single parallel output.
+
+*bit* specifies the bit in the buffer which should be set and *state* specifies the value to be assigned.
+
+#### Parameters
+* `bit` - index of the output channel to be set (0..31). 
+
+* `state` - the value to be assigned (0 or 1).
+
+#### `public void `[`configureCallback`](#classIC74HC595_1aedb307231bf7d0f42d9eaf0abb0e3c45)`(unsigned int(*)(unsigned int buffer) callback,unsigned long callbackInterval)` 
+
+#### Parameters
+* `updateInterval` 
+
+* `callback`
+
+#### `public void `[`callbackMaybe`](#classIC74HC595_1a9b94635c84aedde3e0df7452a0139763)`(bool force)` 
+
+#### Parameters
+* `force`
+
+Generated by [Moxygen](https://sourcey.com/moxygen)

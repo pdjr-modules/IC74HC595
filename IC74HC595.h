@@ -10,48 +10,66 @@
 #ifndef IC74HC595_H
 #define IC74HC595_H
 
+/**
+ * @brief Interface to the IC74HC595 SIPO buffer IC.
+ *
+ * The IC74HC595 is an 8-bit serial-in parallel-out (SIPO) buffer IC
+ * that is commonly used to expand microcontroller output capacity.  
+ */
 class IC74HC595 {
 
   public:
 
     /**
-     * @brief Construct a new IC74HC595 object
-     * 
+     * @brief Construct a new IC74HC595 object.
+     *
+     * \a gpioClock, \a gpioData and \a gpioLatch identify the host
+     * microcontroller GPIO pins used for the SIPO interface connections.
+     *
+     * \a bufferCount specifies the number of ICs making up the
+     * daisy-chained buffer.
+     * Buffer updates are passed as an integer value so the max number
+     * of buffers supported by the library depends upon the host
+     * system's integer implementation: on a system with 32-bit
+     * integers this abstraction can support up to 4 SIPO buffers.
+     *
      * @param gpioClock - GPIO pin connected to IC pin (clock).
      * @param gpioData - GPIO pin connected to IC pin (data).
      * @param gpioLatch - GPIO pin connected to IC pin (latch).
-     * @param bufferCount - the number of ICs in the buffer dais-chain
-     * (defaults to one).
+     * @param bufferCount - optional number of ICs in the buffer daisy-chain (defaults to one).
      */
     IC74HC595(unsigned char gpioClock, unsigned char gpioData, unsigned char gpioLatch, unsigned int bufferCount = 1);
 
     /**
      * @brief Set the I/O mode of the configured GPIO pins.
      * 
-     * Best called from setup().
+     * Initialises the GPIO pins for buffer control.
+     * This method must be called from setup() before any attempt is
+     * made to send data to the buffer.
      */
     void begin();
     
     /**
-     * @brief Set the status of the buffer to a specified value.
+     * @brief Set the buffer parallel outputs to a specified state.
+     *
+     * Each bit in \a status defines the output state of a single
+     * parallel output.
+     * Bits 0 through 7 define the status of the first IC in any
+     * daisy chain; bits 8 through 15 relate to the secong IC and
+     * so on.
      * 
-     * If bufferLength (specified when the instance was created) is 1
-     * then status is a byte value to be assigned to the buffer and
-     * must be passed by reference. For example:
-     * ```
-     * uint8_t v = 0xff;
-     * myBuffer.write(&x);
-     * ```
-     * Otherwise status is taken to be an array of byte values which
-     * will be written to successive ICs in the buffer daisy-chain. 
+     * @param status - the value to be written to the buffer.
      */
     void write(unsigned int status);
 
     /**
-     * @brief 
+     * @brief Set the state of a single parallel output.
      * 
-     * @param bit 
-     * @param state 
+     * \a bit specifies the bit in the buffer which should be set and
+     * \a state specifies the value to be assigned. 
+     * 
+     * @param bit - index of the output channel to be set (0..31).
+     * @param state - the value to be assigned (0 or 1).
      */
     void writeBit(unsigned int bit, unsigned int state);
     

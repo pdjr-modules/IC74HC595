@@ -59,8 +59,8 @@ class IC74HC595 {
      *
      * The number of low order bits to be written can be specified
      * in buffer sized chunks by \a buffers: if this argument is omitted
-     * or set to zero then the \a bufferCount value specified at
-     * instantiation will be used in its stead.
+     * or set to zero then the \a bufferCount value supplied at
+     * instantiation (or its default) will be used in its stead.
      *
      * @param status - the value to be written to the buffer.
      * @param buffers - the number of buffer ICs to be updated.
@@ -70,10 +70,11 @@ class IC74HC595 {
     /**
      * @brief Set the state of a single parallel output.
      * 
-     * When it is not
-     * \a bit specifies the bit in the buffer which should be set and
-     * \a state specifies the value to be assigned. 
-     * 
+     * When it is not appropriate to set all buffer outputs in a single
+     * operation, this method can be used to set a single parallel
+     * output channel by specifying the channel and the value to which
+     * it should be set.
+     *
      * @param bit - index of the output channel to be set (0..31).
      * @param state - the value to be assigned (0 or 1).
      */

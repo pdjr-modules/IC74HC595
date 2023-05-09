@@ -33,21 +33,22 @@ class IC74HC595 {
      * @param gpioClock - GPIO pin connected to the IC74H595 clock pin.
      * @param gpioData - GPIO pin connected to the IC74H595 data pin.
      * @param gpioLatch - GPIO pin connected to the IC74H595 data pin.
-     * @param buffer - number of IC74HC595 ICs in the buffer daisy-chaine (optional: defaults to 1).
+     * @param buffer - number of IC74H595 ICs in the buffer daisy-chain (optional: defaults to 1).
      */
     IC74HC595(unsigned char gpioClock, unsigned char gpioData, unsigned char gpioLatch, unsigned int buffer = 1);
 
     /**
-     * @brief Initiliase the buffer.
+     * @brief Initiliase buffer.
      *
      * This method must be called from setup() before any attempt is
      * made to write data to the buffer.
-     * It sets the GPIO pin modes and sets all buffer outputs OFF.
+     * GPIO pin modes are set to OUT and all buffer output channels
+     * status set to OFF.
      */
     void begin();
     
     /**
-     * @brief Set multiple buffer outputs to a specified state.
+     * @brief Set buffer output channel states.
      *
      * Each bit in \a status defines the output state of a single
      * parallel output channel: bits 0 through 7 define the states of
@@ -56,7 +57,7 @@ class IC74HC595 {
      * second buffer IC and so on.
      *
      * The \a mask value can be used to restrict updates to just those
-     * channels selected by an active bit in the \a mask value.
+     * channels selected by a 1 bit in the \a mask value.
      *
      * @param status - the value to be written to the buffer.
      * @param mask - buffer channels to be updated (optional: default is 0xffffffff which says all channels).
@@ -64,13 +65,17 @@ class IC74HC595 {
     void write(unsigned int status, unsigned int mask);
     
     /**
-     * @brief Configure buffer updates by a scheduled callback.
+     * @brief Configure regular buffer updates.
      *
-     * The callback function will be invoked every \a updateInterval
-     * milliseconds and passed the current buffer status as its only
-     * argument.
-     * The callback must return a new status value which will be
-     * promptly written to the buffer.
+     * This method schedules the callback of a function in the host
+     * application which will be used to regularly update the status
+     * of the buffer.
+     *
+     * The specified callback function is passed the current buffer
+     * status as its only argument and must return a new status value
+     * which will be promptly written to the buffer.
+     *
+     * Typically this method should be called from setup().
      *
      * @param callback - a callback function.
      * @param updateInterval - interval between invocations of \a callback in milliseconds (optional: defaults to 1s).
@@ -78,13 +83,16 @@ class IC74HC595 {
     void configureCallback(unsigned int (*callback)(unsigned int buffer), unsigned long updateInterval = 1000UL);
     
     /**
-     * @brief Invoke any configured callback.
+     * @brief Perform regular or ad-hoc buffer updates.
      * 
-     * This method should typically be called from loop() with no
-     * \a force to trigger an invocation of any configured callback
-     * function at the configured update interval.
+     * This method should typically be called from loop() with to
+     * trigger an invocation of any configured callback function at the
+     * configured update interval.
      * The method can be call with \a force set to true to invoke an
      * immediate callback.
+     *
+     * The configureCallback() method must be used to set up callback
+     * parameters before this method is executed.
      *
      * @param force - if true, forces an immediate invocation of any configured callback (optional: default to false).
      */

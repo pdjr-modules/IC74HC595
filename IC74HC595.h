@@ -11,11 +11,11 @@
 #define IC74HC595_H
 
 /**
- * @brief ADT representing an IC74H595-based parallel output buffer.
+ * @brief ADT representing an IC74HC595-based parallel output buffer.
  *
  * The IC74HC595 IC is an 8-channel serial-in-parallel-out (SIPO)
  * buffer.
- * Multiple IC74H595's can be daisy-chained to increase the number
+ * Multiple IC74HC595's can be daisy-chained to increase the number
  * of available output channels in increments of eight. 
  *
  * In this abstraction the state of all buffer output channels is
@@ -33,7 +33,7 @@ class IC74HC595 {
      * @param gpioClock - GPIO pin connected to the IC74H595 clock pin.
      * @param gpioData - GPIO pin connected to the IC74H595 data pin.
      * @param gpioLatch - GPIO pin connected to the IC74H595 data pin.
-     * @param buffer - number of IC74H595 ICs in the buffer daisy-chain (optional: defaults to 1).
+     * @param buffer - number of IC74HC595 ICs in the buffer daisy-chain (optional: defaults to 1).
      */
     IC74HC595(unsigned char gpioClock, unsigned char gpioData, unsigned char gpioLatch, unsigned int buffer = 1);
 
@@ -62,7 +62,7 @@ class IC74HC595 {
      * @param status - the value to be written to the buffer.
      * @param mask - buffer channels to be updated (optional: default is 0xffffffff which says all channels).
      */
-    void write(unsigned int status, unsigned int mask);
+    void write(unsigned int status, unsigned int mask = 0xffffffff);
     
     /**
      * @brief Configure regular buffer updates.

@@ -20,24 +20,26 @@
  * the available buffer.
  * In this abstraction the state of all buffer output channels is
  * represented by an integer 'status' value which on architectures
- * with 32-bit integers limits the maximum number of operable buffer
- * ICs is four.
+ * with 32-bit integers limits the maximum number of daisy-chained
+ * buffers that can be operated to four.
  */
 class IC74HC595 {
 
   public:
 
     /**
-     * @brief Construct a new IC74HC595 object.
+     * @brief Construct a new IC74HC595-based buffer object.
      *
      * @param gpioClock - GPIO pin connected to the buffer clock input.
      * @param gpioData - GPIO pin connected to the buffer data pin.
      * @param gpioLatch - GPIO pin connected to the buffer data pin.
+     * @param buffer - number of IC74HC595 ICs in the buffer daisy-chaine (optional: defaults to 1).
      */
     IC74HC595(unsigned char gpioClock, unsigned char gpioData, unsigned char gpioLatch);
 
     /**
-     * @brief Set the IO mode of the configured GPIO pins to OUT.
+     * @brief Set the IO mode of the configured GPIO pins to OUT and
+     * initialise the buffer state to 0x00000000.
      *
      * This method must be called from setup() before any attempt is
      * made to write data to the buffer.
@@ -54,9 +56,8 @@ class IC74HC595 {
      * second buffer IC and so on.
      *
      * @param status - the value to be written to the buffer.
-     * @param buffers - the number of buffer ICs to be updated (optional, defaults to 1).
      */
-    void write(unsigned int status, unsigned int buffers = 1);
+    void write(unsigned int status);
 
     /**
      * @brief Set the state of a single parallel output.
@@ -75,24 +76,25 @@ class IC74HC595 {
     /**
      * @brief Configure a callback function to provide regular status updates.
      *
-     * The callback function will be invoked every \a interval
+     * The callback function will be invoked every \a updateInterval
      * milliseconds and passed the current buffer status as its only
      * argument.
      * The callback must return a new status value which will be
      * promptly written to the buffer.
      *
      * @param callback - a callback function.
-     * @param updateInterval - interval between invocations of \a callback in milliseconds (optional: defaulst to 1s).
-     * @param buffers - the number of buffer ICs to be updated (optional: defaults to one).
+     * @param updateInterval - interval between invocations of \a callback in milliseconds (optional: defaults to 1s).
      */
-    void configureCallback(unsigned int (*callback)(unsigned int buffer), unsigned long updateInterval = 1000UL, unsigned int buffers = 1);
+    void configureCallback(unsigned int (*callback)(unsigned int buffer), unsigned long updateInterval = 1000UL);
     
     /**
      * @brief Call any configured callback function at the configured interval.
      * 
-     * This method should be called from loop() and will trigger an
-     * invocation of any configured callback function at its specified
-     * update interval or, optionally, immediately.
+     * This method should typically be called from loop() with no
+     * \a force to trigger an invocation of any configured callback
+     * function at the configured update interval.
+     * The method can be call with \a force set to true to invoke an
+     * immediate callback.
      *
      * @param force - if true, forces an immediate invocation of any configured callback (optional: default to false).
      */
@@ -102,11 +104,11 @@ class IC74HC595 {
     unsigned char gpioClock;
     unsigned char gpioData;
     unsigned char gpioLatch;
+    unsigned int buffers;
     unsigned int status;
 
     unsigned int (*callback)(unsigned int buffer);
     unsigned long callbackInterval;
-    unsigned int callbackBuffers;
 
 };
 

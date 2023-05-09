@@ -1,10 +1,10 @@
 # class `IC74HC595` 
 
-Interface to the [IC74HC595](#classIC74HC595) SIPO buffer IC.
+ADT representing an IC74H595-based parallel output buffer.
 
-The [IC74HC595](#classIC74HC595) is an 8-channel serial-in-parallel-out (SIPO) buffer IC that is commonly used to expand microcontroller output capacity.
+The [IC74HC595](#classIC74HC595) IC is an 8-channel serial-in-parallel-out (SIPO) buffer. Multiple IC74H595's can be daisy-chained to increase the number of available output channels in increments of eight.
 
-Multiple buffer ICs can be daisy-chained to increase the size of the available buffer. In this abstraction the state of all buffer output channels is represented by an integer 'status' value which on architectures with 32-bit integers limits the maximum number of daisy-chained buffers that can be operated to four.
+In this abstraction the state of all buffer output channels is represented by an integer 'status' value which on architectures with 32-bit integers limits the maximum number of daisy-chained buffers that can be operated to four.
 
 ## Summary
 

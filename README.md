@@ -10,18 +10,17 @@ In this abstraction the state of all buffer output channels is represented by an
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`public  `[`IC74HC595`](#classIC74HC595_1a708326f72afe13f1d4c53c078aa9890b)`(unsigned char gpioClock,unsigned char gpioData,unsigned char gpioLatch,unsigned int buffer)` | Construct a new buffer object.
+`public  `[`IC74HC595`](#classIC74HC595_1a708326f72afe13f1d4c53c078aa9890b)`(unsigned char gpioClock,unsigned char gpioData,unsigned char gpioLatch,unsigned int buffer)` | Construct a new buffer.
 `public void `[`begin`](#classIC74HC595_1a66416a0c85080cd00c3ebede9fca3f7b)`()` | Initiliase the buffer.
-`public void `[`write`](#classIC74HC595_1a1ab013254c6c18ef3ab6f5fdce9d62e9)`(unsigned int status)` | Set the buffer outputs to a specified state.
-`public void `[`writeBit`](#classIC74HC595_1ac45af8c0593cb443fc0025b4647da2e8)`(unsigned int state,unsigned int bit)` | Set the state of a single buffer output.
-`public void `[`configureCallback`](#classIC74HC595_1ae79db8eb5438aba43f9c9317bda1a607)`(unsigned int(*)(unsigned int buffer) callback,unsigned long updateInterval)` | Configure a callback function.
+`public void `[`write`](#classIC74HC595_1a089c9670aa7294bd942fc5439124ef01)`(unsigned int status,unsigned int mask)` | Set multiple buffer outputs to a specified state.
+`public void `[`configureCallback`](#classIC74HC595_1ae79db8eb5438aba43f9c9317bda1a607)`(unsigned int(*)(unsigned int buffer) callback,unsigned long updateInterval)` | Configure buffer updates by a scheduled callback.
 `public void `[`callbackMaybe`](#classIC74HC595_1a9b94635c84aedde3e0df7452a0139763)`(bool force)` | Invoke any configured callback.
 
 ## Members
 
 #### `public  `[`IC74HC595`](#classIC74HC595_1a708326f72afe13f1d4c53c078aa9890b)`(unsigned char gpioClock,unsigned char gpioData,unsigned char gpioLatch,unsigned int buffer)` 
 
-Construct a new buffer object.
+Construct a new buffer.
 
 #### Parameters
 * `gpioClock` - GPIO pin connected to the IC74H595 clock pin. 
@@ -38,29 +37,22 @@ Initiliase the buffer.
 
 This method must be called from setup() before any attempt is made to write data to the buffer. It sets the GPIO pin modes and sets all buffer outputs OFF.
 
-#### `public void `[`write`](#classIC74HC595_1a1ab013254c6c18ef3ab6f5fdce9d62e9)`(unsigned int status)` 
+#### `public void `[`write`](#classIC74HC595_1a089c9670aa7294bd942fc5439124ef01)`(unsigned int status,unsigned int mask)` 
 
-Set the buffer outputs to a specified state.
+Set multiple buffer outputs to a specified state.
 
 Each bit in *status* defines the output state of a single parallel output channel: bits 0 through 7 define the states of channels 0 through 7 on the first buffer IC in any daisy chain; bits 8 through 15 the states of channels 0 throgh 7 on any second buffer IC and so on.
 
-#### Parameters
-* `status` - the value to be written to the buffer.
-
-#### `public void `[`writeBit`](#classIC74HC595_1ac45af8c0593cb443fc0025b4647da2e8)`(unsigned int state,unsigned int bit)` 
-
-Set the state of a single buffer output.
-
-When it is not appropriate to set the state of all buffer outputs in a single operation, this method can be used to set a single parallel output channel by specifying the output channel number (in the range 0 through 31) and the value to which it should be set.
+The *mask* value can be used to restrict updates to just those channels selected by an active bit in the *mask* value.
 
 #### Parameters
-* `state` - the value to be assigned (0 or 1). 
+* `status` - the value to be written to the buffer. 
 
-* `bit` - index of the output channel to be set (defaults to 1).
+* `mask` - buffer channels to be updated (optional: default is 0xffffffff which says all channels).
 
 #### `public void `[`configureCallback`](#classIC74HC595_1ae79db8eb5438aba43f9c9317bda1a607)`(unsigned int(*)(unsigned int buffer) callback,unsigned long updateInterval)` 
 
-Configure a callback function.
+Configure buffer updates by a scheduled callback.
 
 The callback function will be invoked every *updateInterval* milliseconds and passed the current buffer status as its only argument. The callback must return a new status value which will be promptly written to the buffer.
 

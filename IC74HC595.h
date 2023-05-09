@@ -28,7 +28,7 @@ class IC74HC595 {
   public:
 
     /**
-     * @brief Construct a new buffer object.
+     * @brief Construct a new buffer.
      *
      * @param gpioClock - GPIO pin connected to the IC74H595 clock pin.
      * @param gpioData - GPIO pin connected to the IC74H595 data pin.
@@ -47,7 +47,7 @@ class IC74HC595 {
     void begin();
     
     /**
-     * @brief Set the buffer outputs to a specified state.
+     * @brief Set multiple buffer outputs to a specified state.
      *
      * Each bit in \a status defines the output state of a single
      * parallel output channel: bits 0 through 7 define the states of
@@ -55,26 +55,16 @@ class IC74HC595 {
      * bits 8 through 15 the states of channels 0 throgh 7 on any
      * second buffer IC and so on.
      *
-     * @param status - the value to be written to the buffer.
-     */
-    void write(unsigned int status);
-
-    /**
-     * @brief Set the state of a single buffer output.
-     * 
-     * When it is not appropriate to set the state of all buffer
-     * outputs in a single operation, this method can be used to set a
-     * single parallel output channel by specifying the output channel
-     * number (in the range 0 through 31) and the value to which it
-     * should be set.
+     * The \a mask value can be used to restrict updates to just those
+     * channels selected by an active bit in the \a mask value.
      *
-     * @param state - the value to be assigned (0 or 1).
-     * @param bit - index of the output channel to be set (defaults to 1).
+     * @param status - the value to be written to the buffer.
+     * @param mask - buffer channels to be updated (optional: default is 0xffffffff which says all channels).
      */
-    void writeBit(unsigned int state, unsigned int bit = 0);
+    void write(unsigned int status, unsigned int mask);
     
     /**
-     * @brief Configure a callback function.
+     * @brief Configure buffer updates by a scheduled callback.
      *
      * The callback function will be invoked every \a updateInterval
      * milliseconds and passed the current buffer status as its only

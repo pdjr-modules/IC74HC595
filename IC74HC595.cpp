@@ -22,8 +22,8 @@ void IC74HC595::begin() {
   this->write(this->status);
 }
 
-void IC74HC595::write(unsigned int status) {
-  this->status = status;
+void IC74HC595::write(unsigned int status, unsigned int mask) {
+  this->status = (this->status & ^this->mask) | status;
   digitalWrite(this->gpioLatch, 0);
   for (unsigned int i = this->buffers; i > 0; i--) {
     shiftOut(this->gpioData, this->gpioClock, MSBFIRST, (this->status >> ((i - 1) * 8)) & 0xff);

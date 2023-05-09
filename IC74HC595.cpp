@@ -13,6 +13,8 @@ IC74HC595::IC74HC595(unsigned char gpioClock, unsigned char gpioData, unsigned c
   this->gpioLatch = gpioLatch;
   this->buffers = 1;
   this->staus = 0;
+  this->callback = 0;
+  this->callbackInterval = 1000UL;
 }
 
 void IC74HC595::begin() {
@@ -50,7 +52,9 @@ void IC74HC595::callbackMaybe(bool force) {
   unsigned long now = millis();
 
   if ((now > deadline) || force) {
-    this->write(this->callback(this->buffer));
+    if (this->callback) {
+      this->write(this->callback(this->buffer));
+    }
     deadline = (now + this->callbackInterval);
   }
 }

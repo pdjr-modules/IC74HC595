@@ -10,37 +10,37 @@ In this abstraction the state of all buffer output channels is represented by an
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`public  `[`IC74HC595`](#classIC74HC595_1a47de1e2edc0d679ffa54efc43451b1a6)`(unsigned char gpioClock,unsigned char gpioData,unsigned char gpioLatch)` | Construct a new IC74HC595-based buffer object.
-`public void `[`begin`](#classIC74HC595_1a66416a0c85080cd00c3ebede9fca3f7b)`()` | Set the IO mode of the configured GPIO pins to OUT and initialise the buffer state to 0x00000000.
-`public void `[`write`](#classIC74HC595_1a1ab013254c6c18ef3ab6f5fdce9d62e9)`(unsigned int status)` | Set the outputs of connected buffer ICs to a specified state.
-`public void `[`writeBit`](#classIC74HC595_1ac45af8c0593cb443fc0025b4647da2e8)`(unsigned int state,unsigned int bit)` | Set the state of a single parallel output.
-`public void `[`configureCallback`](#classIC74HC595_1ae79db8eb5438aba43f9c9317bda1a607)`(unsigned int(*)(unsigned int buffer) callback,unsigned long updateInterval)` | Configure a callback function to provide regular status updates.
-`public void `[`callbackMaybe`](#classIC74HC595_1a9b94635c84aedde3e0df7452a0139763)`(bool force)` | Call any configured callback function at the configured interval.
+`public  `[`IC74HC595`](#classIC74HC595_1a708326f72afe13f1d4c53c078aa9890b)`(unsigned char gpioClock,unsigned char gpioData,unsigned char gpioLatch,unsigned int buffer)` | Construct a new buffer object.
+`public void `[`begin`](#classIC74HC595_1a66416a0c85080cd00c3ebede9fca3f7b)`()` | Initiliase the buffer.
+`public void `[`write`](#classIC74HC595_1a1ab013254c6c18ef3ab6f5fdce9d62e9)`(unsigned int status)` | Set the buffer outputs to a specified state.
+`public void `[`writeBit`](#classIC74HC595_1ac45af8c0593cb443fc0025b4647da2e8)`(unsigned int state,unsigned int bit)` | Set the state of a single buffer output.
+`public void `[`configureCallback`](#classIC74HC595_1ae79db8eb5438aba43f9c9317bda1a607)`(unsigned int(*)(unsigned int buffer) callback,unsigned long updateInterval)` | Configure a callback function.
+`public void `[`callbackMaybe`](#classIC74HC595_1a9b94635c84aedde3e0df7452a0139763)`(bool force)` | Invoke any configured callback.
 
 ## Members
 
-#### `public  `[`IC74HC595`](#classIC74HC595_1a47de1e2edc0d679ffa54efc43451b1a6)`(unsigned char gpioClock,unsigned char gpioData,unsigned char gpioLatch)` 
+#### `public  `[`IC74HC595`](#classIC74HC595_1a708326f72afe13f1d4c53c078aa9890b)`(unsigned char gpioClock,unsigned char gpioData,unsigned char gpioLatch,unsigned int buffer)` 
 
-Construct a new IC74HC595-based buffer object.
+Construct a new buffer object.
 
 #### Parameters
-* `gpioClock` - GPIO pin connected to the buffer clock input. 
+* `gpioClock` - GPIO pin connected to the IC74H595 clock pin. 
 
-* `gpioData` - GPIO pin connected to the buffer data pin. 
+* `gpioData` - GPIO pin connected to the IC74H595 data pin. 
 
-* `gpioLatch` - GPIO pin connected to the buffer data pin. 
+* `gpioLatch` - GPIO pin connected to the IC74H595 data pin. 
 
 * `buffer` - number of [IC74HC595](#classIC74HC595) ICs in the buffer daisy-chaine (optional: defaults to 1).
 
 #### `public void `[`begin`](#classIC74HC595_1a66416a0c85080cd00c3ebede9fca3f7b)`()` 
 
-Set the IO mode of the configured GPIO pins to OUT and initialise the buffer state to 0x00000000.
+Initiliase the buffer.
 
-This method must be called from setup() before any attempt is made to write data to the buffer.
+This method must be called from setup() before any attempt is made to write data to the buffer. It sets the GPIO pin modes and sets all buffer outputs OFF.
 
 #### `public void `[`write`](#classIC74HC595_1a1ab013254c6c18ef3ab6f5fdce9d62e9)`(unsigned int status)` 
 
-Set the outputs of connected buffer ICs to a specified state.
+Set the buffer outputs to a specified state.
 
 Each bit in *status* defines the output state of a single parallel output channel: bits 0 through 7 define the states of channels 0 through 7 on the first buffer IC in any daisy chain; bits 8 through 15 the states of channels 0 throgh 7 on any second buffer IC and so on.
 
@@ -49,7 +49,7 @@ Each bit in *status* defines the output state of a single parallel output channe
 
 #### `public void `[`writeBit`](#classIC74HC595_1ac45af8c0593cb443fc0025b4647da2e8)`(unsigned int state,unsigned int bit)` 
 
-Set the state of a single parallel output.
+Set the state of a single buffer output.
 
 When it is not appropriate to set the state of all buffer outputs in a single operation, this method can be used to set a single parallel output channel by specifying the output channel number (in the range 0 through 31) and the value to which it should be set.
 
@@ -60,7 +60,7 @@ When it is not appropriate to set the state of all buffer outputs in a single op
 
 #### `public void `[`configureCallback`](#classIC74HC595_1ae79db8eb5438aba43f9c9317bda1a607)`(unsigned int(*)(unsigned int buffer) callback,unsigned long updateInterval)` 
 
-Configure a callback function to provide regular status updates.
+Configure a callback function.
 
 The callback function will be invoked every *updateInterval* milliseconds and passed the current buffer status as its only argument. The callback must return a new status value which will be promptly written to the buffer.
 
@@ -71,7 +71,7 @@ The callback function will be invoked every *updateInterval* milliseconds and pa
 
 #### `public void `[`callbackMaybe`](#classIC74HC595_1a9b94635c84aedde3e0df7452a0139763)`(bool force)` 
 
-Call any configured callback function at the configured interval.
+Invoke any configured callback.
 
 This method should typically be called from loop() with no *force* to trigger an invocation of any configured callback function at the configured update interval. The method can be call with *force* set to true to invoke an immediate callback.
 

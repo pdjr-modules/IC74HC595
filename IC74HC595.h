@@ -28,26 +28,26 @@ class IC74HC595 {
   public:
 
     /**
-     * @brief Construct a new IC74HC595-based buffer object.
+     * @brief Construct a new buffer object.
      *
-     * @param gpioClock - GPIO pin connected to the buffer clock input.
-     * @param gpioData - GPIO pin connected to the buffer data pin.
-     * @param gpioLatch - GPIO pin connected to the buffer data pin.
+     * @param gpioClock - GPIO pin connected to the IC74H595 clock pin.
+     * @param gpioData - GPIO pin connected to the IC74H595 data pin.
+     * @param gpioLatch - GPIO pin connected to the IC74H595 data pin.
      * @param buffer - number of IC74HC595 ICs in the buffer daisy-chaine (optional: defaults to 1).
      */
-    IC74HC595(unsigned char gpioClock, unsigned char gpioData, unsigned char gpioLatch);
+    IC74HC595(unsigned char gpioClock, unsigned char gpioData, unsigned char gpioLatch, unsigned int buffer = 1);
 
     /**
-     * @brief Set the IO mode of the configured GPIO pins to OUT and
-     * initialise the buffer state to 0x00000000.
+     * @brief Initiliase the buffer.
      *
      * This method must be called from setup() before any attempt is
      * made to write data to the buffer.
+     * It sets the GPIO pin modes and sets all buffer outputs OFF.
      */
     void begin();
     
     /**
-     * @brief Set the outputs of connected buffer ICs to a specified state.
+     * @brief Set the buffer outputs to a specified state.
      *
      * Each bit in \a status defines the output state of a single
      * parallel output channel: bits 0 through 7 define the states of
@@ -60,7 +60,7 @@ class IC74HC595 {
     void write(unsigned int status);
 
     /**
-     * @brief Set the state of a single parallel output.
+     * @brief Set the state of a single buffer output.
      * 
      * When it is not appropriate to set the state of all buffer
      * outputs in a single operation, this method can be used to set a
@@ -74,7 +74,7 @@ class IC74HC595 {
     void writeBit(unsigned int state, unsigned int bit = 0);
     
     /**
-     * @brief Configure a callback function to provide regular status updates.
+     * @brief Configure a callback function.
      *
      * The callback function will be invoked every \a updateInterval
      * milliseconds and passed the current buffer status as its only
@@ -88,7 +88,7 @@ class IC74HC595 {
     void configureCallback(unsigned int (*callback)(unsigned int buffer), unsigned long updateInterval = 1000UL);
     
     /**
-     * @brief Call any configured callback function at the configured interval.
+     * @brief Invoke any configured callback.
      * 
      * This method should typically be called from loop() with no
      * \a force to trigger an invocation of any configured callback
